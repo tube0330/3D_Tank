@@ -6,7 +6,7 @@ public class TankMove : MonoBehaviour
 {
     Transform tr;
     Rigidbody rb;
-    float moveSpeed = 80f;
+    float moveSpeed = 30f;
     float rotSpeed = 50f;
     float h , v, r;
 
