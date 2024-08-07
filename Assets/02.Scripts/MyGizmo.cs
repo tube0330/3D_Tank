@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class MyGizmo : MonoBehaviour
 {
-    void Start()
-    {
-        
-    }
+    public Color color = Color.blue;
+    public float r = 1f;
 
-    void Update()
+    void OnDrawGizmos()
     {
-        
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(transform.position, r);
     }
 }
