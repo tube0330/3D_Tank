@@ -47,18 +47,18 @@ public class ApachePatrol : MonoBehaviour
 
     #region ?
     public List<Transform> patrolList = new List<Transform>();
-    Transform tr = null;
-    public bool isSearch = true;
-    float moveSpeed = 100f;
-    int wayPointCount;
-    float rotSpeed = 15f;
+    [SerializeField] A_LaserBeam[] laserBeams;
     public Transform firePos1;
     public Transform firePos2;
     public GameObject A_Bullet;
+    public GameObject expEff;
+    Transform tr = null;
+    int wayPointCount;
+    float moveSpeed = 100f;
+    float rotSpeed = 15f;
     float curDelay = 0f;
     float maxDelay = 0.5f;
-    [SerializeField] LaserBeam[] laserBeams;
-    public GameObject expEff;
+    public bool isSearch = true;
 
     void Start()
     {
@@ -68,12 +68,12 @@ public class ApachePatrol : MonoBehaviour
             point.GetComponentsInChildren<Transform>(patrolList);
         patrolList.RemoveAt(0);
 
+        A_Bullet = Resources.Load<GameObject>("A_Bullet");
+        expEff = Resources.Load<GameObject>("BigExplosionEffect");
+
         wayPointCount = 0;
         tr = transform;
-
-        A_Bullet = Resources.Load<GameObject>("A_Bullet");
         curDelay = maxDelay;
-        expEff = Resources.Load<GameObject>("BigExplosionEffect");
     }
 
     void Update()
