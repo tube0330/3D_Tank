@@ -56,7 +56,9 @@ public class ApachePatrol : MonoBehaviour
     public Transform firePos2;
     public GameObject A_Bullet;
     float curDelay = 0f;
-    float maxDelay = 5f;
+    float maxDelay = 0.5f;
+    [SerializeField] LaserBeam[] laserBeams;
+    public GameObject expEff;
 
     void Start()
     {
@@ -71,6 +73,7 @@ public class ApachePatrol : MonoBehaviour
 
         A_Bullet = Resources.Load<GameObject>("A_Bullet");
         curDelay = maxDelay;
+        expEff = Resources.Load<GameObject>("BigExplosionEffect");
     }
 
     void Update()
@@ -141,20 +144,43 @@ public class ApachePatrol : MonoBehaviour
         if (targetDist.magnitude > 75f)
             isSearch = true;
 
-        curDelay -= 0.02f;
+        Ray ray1 = new Ray(firePos1.position, firePos1.forward * 100f);
+        Ray ray2 = new Ray(firePos2.position, firePos2.forward * 100f);
+        RaycastHit hit;
 
-        if (curDelay <= 0f)
+        if (Physics.Raycast(ray1, out hit, Mathf.Infinity, 1 << 9) || Physics.Raycast(ray2, out hit, Mathf.Infinity, 1 << 9))
         {
-            curDelay = maxDelay;
+            curDelay -= 0.02f;
 
-            Fire();
+            if (curDelay <= 0f)
+            {
+                curDelay = maxDelay;
+                laserBeams[0].FireRay();
+                laserBeams[1].FireRay();
+                ShowEffect(hit);
+            }
+        }
+
+        else
+        {
+            GameObject hitEff = Instantiate(expEff, tr.InverseTransformPoint(ray1.GetPoint(200f)), Quaternion.identity);
+            Destroy(hitEff, 2.0f);
         }
     }
 
-    void Fire()
+    void ShowEffect(RaycastHit hit)
+    {
+        Vector3 hitPos = hit.point;
+        Vector3 normal = (firePos1.position - hitPos).normalized;
+        Quaternion rot = Quaternion.FromToRotation(-Vector3.forward, normal);
+        GameObject hitEff = Instantiate(expEff, hitPos, rot);
+        Destroy(hitEff, 1.0f);
+    }
+
+    /*void Fire()
     {
         Instantiate(A_Bullet, firePos1.position, firePos1.rotation);
         Instantiate(A_Bullet, firePos2.position, firePos2.rotation);
-    }
+    }*/
     #endregion
 }
